@@ -1,16 +1,17 @@
 // Songs list
 const songs = [
-    { title: "Song 1", src: "1.m4a" },
-    { title: "Song 2", src: "2.m4a" },
-    { title: "Song 3", src: "1.m4a" }
+    { title: "Chal Tere isq me", src: "1.m4a" },
+    { title: "Aaj Ki Raat", src: "2.m4a" }
 ];
 
 let index = 0;
 let audio = document.getElementById("audio");
 let songTitle = document.getElementById("songTitle");
-let seekBar = document.getElementById("seekBar");
+let seekBar = document.getElementById("myRange");
 let time = document.getElementById("time");
-let playlist = document.getElementById("playlist");
+let current = document.getElementById("current");
+let img = document.getElementById("img");
+let midBtn = document.getElementById("midBtn");
 
 // Load first song
 loadSong(index);
@@ -26,8 +27,18 @@ function loadSong(i) {
 }
 
 function playPause() {
-    if (audio.paused) audio.play();
-    else audio.pause();
+    if (audio.paused) {
+        audio.play();
+        midBtn.classList.add("fa-circle-pause");
+        midBtn.classList.remove("fa-circle-play");
+        img.classList.add("ani");
+    }
+    else {
+        audio.pause();
+        midBtn.classList.add("fa-circle-play");
+        midBtn.classList.remove("fa-circle-pause");
+        img.classList.remove("ani");
+    }
 }
 
 function nextSong() {
@@ -58,7 +69,9 @@ function formatTime(sec) {
 }
 
 function updateTime() {
-    time.innerText = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration || 0)}`;
+    time.innerText = formatTime(audio.duration || 0);
+    current.innerText = formatTime(audio.currentTime);
+
 }
 
 // Build Playlist UI

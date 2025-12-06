@@ -9,6 +9,7 @@
 
 body{
   background-color: #0C4646;
+  text-align: center;
 }
 
 /**nav**/
@@ -25,14 +26,10 @@ body{
 }
 
 .navH{
-  border: transparent;
+ cursor: pointer;
 }
 
-.navH:hover{
-  border:1.4px solid white;
-  padding: 1.5px;
-  border-radius: 5px;
-}
+
 
 /**Music name**/
 .musicname{
@@ -85,23 +82,37 @@ body{
   background-image: url("aaj.png");
   background-size: cover;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  animation: ani 6s linear infinete;
+  
 }
 
-@keyframe ani{
-to{ transform:rotate(0deg);
-}from{
- transform:rotate(360deg);
+.ani{
+  animation: ani 60s linear infinite;
+  
 }
+/**make a animation for loader rotate**/
+@keyframes ani {
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
 }
 
 
+#myRange{
+      width: 54%;
+    margin-top: 35px;
+}
 .player{
   margin-top:60px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   font-size: 30px;
+}
+.player i {
+  cursor: pointer;
 }
 
 .play{
@@ -121,6 +132,7 @@ h4{
   text-align: center;
   margin-right: 10px;
   margin-top: 20px;
+  
 }
 
 
