@@ -1,54 +1,84 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="music.css">
-  <title>music player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .player {
+            width: 340px;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px #000;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 10px;
+            border: none;
+            background: #04b4ff;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        input[type=range] {
+            width: 100%;
+        }
+
+        .playlist div {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #333;
+        }
+        .playlist div:hover {
+            background: #333;
+        }
+    </style>
 </head>
-
 <body>
-<div class="nav">
-  <span class="navH"><i class="fa-solid fa-chevron-down"></i></span>
-  <span class=" h playlist navH">Indie Rock Road Trip</span>
-  <span class="navH"><i class="fa-solid fa-bars"></i></span>
-</div>
 
-
-<div class="musicname">
-  <div class="Name">A Moment Apart</div>
-  <div class="lang">Odesza</div>
-</div>
-
-
-<div class="timespamp">
-  <div class="time">02:15 | </div>
-  <div class="current"> 01:40</div>
-  
-</div>
-
-
-<div class="outer">
-  <div class="cover">
-  <div class="image"></div>
-</div>
-</div>
-
+<h2>Offline Music Player</h2>
 
 <div class="player">
-  <i class="fa-solid fa-backward-step"></i>
-  <i class="fa-solid fa-circle-play play"></i>
-  <a href="aajkiraat.html"><i class="fa-solid fa-forward-step"></i>
-</a>
+    <h3 id="songTitle">No Song Playing</h3>
+    <audio id="audio"></audio>
+
+    <input type="range" id="seekBar" value="0">
+
+    <div>
+        <button onclick="prevSong()">Prev</button>
+        <button onclick="playPause()">Play/Pause</button>
+        <button onclick="nextSong()">Next</button>
+    </div>
+
+    <p id="time">00:00 / 00:00</p>
 </div>
 
-<div class="audio">
-  <audio controls src="1.m4a"></audio>
-</div>
+<h3>Playlist</h3>
+<div class="playlist" id="playlist"></div>
 
-<h4>Himanshu Singh</h4>
+<script src="player.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+}
+</script>
+
 </body>
+</html> 
 
-</html>
+
+
