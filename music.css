@@ -20,13 +20,87 @@ body{
  justify-content: space-evenly;
  align-items: center;
 }
- .playlist{
+ /* .playlist{
   font-weight:500px;
   color: #C2C2C2;
-}
+} */
 
 .navH{
  cursor: pointer;
+}
+
+/* Playlist dropdown coming out from the nav. Hidden by default. */
+#playlist.playlist-dropdown{
+  position: absolute;
+  top: 100%;
+  right: 10px;
+  z-index: 9999;
+  background-color: rgba(12,70,70,0.92); /* slightly transparent */
+  
+  padding: 8px;
+  width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  display: none;
+}
+
+/* visible class toggles dropdown */
+#playlist.playlist-dropdown.visible{
+  display: block;
+}
+
+/* playlist item styles */
+#playlist .playlist-item{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#playlist .playlist-item:hover{
+  background: rgba(255,201,79,0.06);
+}
+
+/* thumbnail inside playlist */
+#playlist .thumb{
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+#playlist .title{
+  font-size: 14px;
+  color: #fff;
+  text-align: left;
+}
+
+/* per-item play/pause icon */
+#playlist .playlist-icon{
+  font-size: 14px;
+  color: #FFC94F;
+  opacity: 0.95;
+}
+
+#playlist .playlist-item.playing{
+  background: rgba(255,201,79,0.08);
+}
+
+/* hide vertical scrollbar in playlist dropdown while keeping scrolling functional */
+#playlist.playlist-dropdown{
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+#playlist.playlist-dropdown::-webkit-scrollbar{
+  display: none; /* Chrome, Safari, Opera */
 }
 
 
@@ -99,11 +173,30 @@ body{
   }
 }
 
-
-#myRange{
-      width: 54%;
+input[type=range] {
+  -webkit-appearance: none;
+   width: 54%;
+   height: 3px;
+   cursor: pointer;
     margin-top: 35px;
+    background-color: #FFC94F;
+    border-radius: 11px;
+  
 }
+
+/*  thimb styling*/
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #0C4646;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #FFC94F;
+}
+
 .player{
   margin-top:60px;
   display: flex;
