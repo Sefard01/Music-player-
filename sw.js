@@ -1,6 +1,6 @@
 // Service Worker for Music-player-
-const SHELL_CACHE = 'music-player-shell-v1';
-const MEDIA_CACHE = 'music-player-media-v1';
+const SHELL_CACHE = 'm-player-shell-v1';
+const MEDIA_CACHE = 'm-player-media-v1';
 const SHELL_FILES = [
   '/',
   '/index.html',

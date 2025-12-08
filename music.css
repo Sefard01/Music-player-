@@ -1,58 +1,58 @@
-*{
+* {
   margin: 0px;
   border: border-box;
-  color:white;
+  color: white;
   font-family: "Itim", roboto;
   font-weight: 400;
   font-style: normal;
 }
 
-body{
-  background-color: #0C4646;
+body {
+  background-color: #0c4646;
   text-align: center;
 }
 
 /**nav**/
 
-.nav{
- display: flex; 
- margin-top: 20px;
- justify-content: space-evenly;
- align-items: center;
+.nav {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-evenly;
+  align-items: center;
 }
- /* .playlist{
+/* .playlist{
   font-weight:500px;
   color: #C2C2C2;
 } */
 
-.navH{
- cursor: pointer;
+.navH {
+  cursor: pointer;
 }
 
 /* Playlist dropdown coming out from the nav. Hidden by default. */
-#playlist.playlist-dropdown{
+#playlist.playlist-dropdown {
   position: absolute;
   top: 100%;
   right: 10px;
   z-index: 9999;
-  background-color: rgba(12,70,70,0.92); /* slightly transparent */
-  
+  background-color: rgba(12, 70, 70, 0.92); /* slightly transparent */
+
   padding: 8px;
   width: 260px;
   max-height: 320px;
   overflow-y: auto;
   border-radius: 6px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   display: none;
 }
 
 /* visible class toggles dropdown */
-#playlist.playlist-dropdown.visible{
+#playlist.playlist-dropdown.visible {
   display: block;
 }
 
 /* playlist item styles */
-#playlist .playlist-item{
+#playlist .playlist-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -62,132 +62,123 @@ body{
   border-radius: 4px;
 }
 
-#playlist .playlist-item:hover{
-  background: rgba(255,201,79,0.06);
+#playlist .playlist-item:hover {
+  background: rgba(255, 201, 79, 0.06);
 }
 
 /* thumbnail inside playlist */
-#playlist .thumb{
+#playlist .thumb {
   width: 44px;
   height: 44px;
   flex: 0 0 44px;
   border-radius: 4px;
   background-size: cover;
   background-position: center;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-#playlist .title{
+#playlist .title {
   font-size: 14px;
   color: #fff;
   text-align: left;
 }
 
 /* hide vertical scrollbar in playlist dropdown while keeping scrolling functional */
-#playlist.playlist-dropdown{
+#playlist.playlist-dropdown {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-#playlist.playlist-dropdown::-webkit-scrollbar{
+#playlist.playlist-dropdown::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
 
-
-
 /**Music name**/
-.musicname{
+.musicname {
   margin-top: 35px;
   text-align: center;
 }
-.musicname > .Name{
+.musicname > .Name {
   font-size: 20px;
 }
-.lang{
+.lang {
   display: inline;
-  color:#C2C2C2;
+  color: #c2c2c2;
 }
 
-
 /**Time stamp**/
-.timespamp{
+.timespamp {
   margin-top: 25px;
   display: flex;
   justify-content: center;
 }
-.current{
+.current {
   margin-left: 4px;
-  color:#FFC94F;
+  color: #ffc94f;
 }
 
 /**cover**/
-.outer{
-  
+.outer {
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
-.cover{
+.cover {
   border-radius: 50%;
   padding: 20px;
   border: 3px solid white;
-  border-top: 3px solid #0C4646;
-  border-right: 3px solid #FFC94F;
+  border-top: 3px solid #0c4646;
+  border-right: 3px solid #ffc94f;
   height: 200px;
   width: 200px;
- 
 }
 
-.image{
+.image {
   height: 100%;
-  width:100%;
+  width: 100%;
   border-radius: 50%;
   background-image: url("aaj.png");
   background-size: cover;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  
 }
 
-.ani{
+.ani {
   animation: ani 60s linear infinite;
-  
 }
 /**make a animation for loader rotate**/
 @keyframes ani {
-  0%{
+  0% {
     transform: rotate(0deg);
   }
-  100%{
+  100% {
     transform: rotate(360deg);
   }
 }
 
-input[type=range] {
+input[type="range"] {
   -webkit-appearance: none;
-   width: 54%;
-   height: 3px;
-   cursor: pointer;
-    margin-top: 35px;
-    background-color: #FFC94F;
-    border-radius: 11px;
-  
+  width: 54%;
+  height: 3px;
+  cursor: pointer;
+  margin-top: 35px;
+  background-color: #ffc94f;
+  border-radius: 11px;
 }
 
 /*  thimb styling*/
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #0C4646;
+  background: #0c4646;
   cursor: pointer;
   border-radius: 50%;
-  border: 2px solid #FFC94F;
+  border: 2px solid #ffc94f;
 }
 
-.player{
-  margin-top:60px;
+.player {
+  margin-top: 60px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -197,24 +188,71 @@ input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
 }
 
-.play{
+.play {
   font-size: 50px;
 }
 
-.audio{
+.audio {
   margin-top: 20px;
   display: flex;
- justify-content: center;
+  justify-content: center;
   align-items: center;
-  
 }
 
-h4{
-  color:#C2C2C2;
+h4 {
+  color: #c2c2c2;
   text-align: center;
   margin-right: 10px;
   margin-top: 20px;
-  
 }
 
-
+/* User name modal */
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.user-modal {
+  /*  bg color with transparent*/
+  background: raba(12, 70, 70, 0.92);
+  padding: 18px;
+  border-radius: 8px;
+  border: 2px solid #353535;
+  width: 320px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+.user-modal h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+.user-modal input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
+  background: transparent;
+  color: #fff;
+}
+.user-modal .actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.user-modal button {
+  background: #ffc94f;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.user-modal button.secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+}

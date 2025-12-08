@@ -3,9 +3,9 @@
 
 
 const songs = [
-    { title: "Apna Har Din", src: "Songs/1.mp3" },
+    { title: "Makhna", src: "Songs/1.mp3" },
     { title: "Thar", src: "Songs/2.mp3" },
-    { title: "Makhna", src: "Songs/3.mp3" },
+    { title: "Apna Har Din", src: "Songs/3.mp3" },
     { title: "Temporary Pyar", src: "Songs/4.mp3" },
     { title: "O Mere Dil Ke Chain", src: "Songs/5.mp3" },
     { title: "Dekha Ek Khwab", src: "Songs/6.mp3" },
@@ -14,7 +14,11 @@ const songs = [
     { title: "Gutt Te Paranda", src: "Songs/9.mp3" },
     { title: "Shape", src: "Songs/10.mp3" },
     { title: "Ajj Ki Raat", src: "Songs/11.mp3" },
-    { title: "Chal Tere Ishq me", src: "Songs/12.mp3" }
+    { title: "Chal Tere Ishq me", src: "Songs/12.mp3" },
+    { title: "Illahi" , src:"Songs/13.m4a"},
+    { title: "Kachha Ghada" , src:"Songs/14.mp3"},
+    { title: "Nach Meri Jan" , src:"Songs/15.m4a"},
+    { title: "Tumhen Dil Lagi" , src:"Songs/16.m4a"}
 ];
 
 const cover = [
@@ -32,11 +36,13 @@ const cover = [
     "cover/12.png",
     "cover/13.png",
     "cover/14.png",
-    "cover/15.png"
+    "cover/15.png",
+    "cover/16.png"
+
 ];
 
 // --- IndexedDB cache for offline support ---
-const DB_NAME = 'music_player_cache_v1';
+const DB_NAME = 'm_players_cache_v3';
 const STORE_NAME = 'resources';
 let dbPromise = null;
 
@@ -152,6 +158,79 @@ let time = document.getElementById("time");
 let current = document.getElementById("current");
 let img = document.getElementById("img");
 let midBtn = document.getElementById("midBtn");
+// Username handling: ask on first load and store in localStorage
+const USER_KEY = 'mp_username';
+function setUsernameUI(name){
+    const el = document.getElementById('username');
+    if(el) el.textContent = name;
+}
+
+function showUsernameModal(){
+    // create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'user-modal-overlay';
+
+    const box = document.createElement('div');
+    box.className = 'user-modal';
+    box.innerHTML = `<h3>Welcome</h3><div>Please enter your name:</div>`;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Your name';
+    box.appendChild(input);
+
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    const btnSave = document.createElement('button');
+    btnSave.textContent = 'Save';
+    const btnSkip = document.createElement('button');
+    btnSkip.textContent = 'Skip';
+    btnSkip.className = 'secondary';
+    actions.appendChild(btnSkip);
+    actions.appendChild(btnSave);
+    box.appendChild(actions);
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    function cleanup(){
+        overlay.remove();
+    }
+
+    btnSave.addEventListener('click', ()=>{
+        const v = (input.value || '').trim();
+        const name = v || 'User';
+        try{ localStorage.setItem(USER_KEY, name); }catch(e){}
+        setUsernameUI(name);
+        cleanup();
+    });
+
+    btnSkip.addEventListener('click', ()=>{
+        const name = 'User';
+        try{ localStorage.setItem(USER_KEY, name); }catch(e){}
+        setUsernameUI(name);
+        cleanup();
+    });
+
+    // allow Enter to save
+    input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter') btnSave.click();
+    });
+    input.focus();
+}
+
+// initialize username from cache or ask
+try{
+    const stored = localStorage.getItem(USER_KEY);
+    if(stored && stored.trim()){
+        setUsernameUI(stored);
+    } else {
+        // ask user
+        window.requestAnimationFrame(()=> showUsernameModal());
+    }
+}catch(e){
+    // localStorage may be disabled; skip gracefully
+}
 // When a song ends, automatically play the next one
 if (audio) {
     audio.addEventListener('ended', () => {
