@@ -35,6 +35,114 @@ const cover = [
     "cover/15.png"
 ];
 
+// --- IndexedDB cache for offline support ---
+const DB_NAME = 'music_player_cache_v1';
+const STORE_NAME = 'resources';
+let dbPromise = null;
+
+function openDb() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = (ev) => {
+            const db = ev.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME);
+            }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+    return dbPromise;
+}
+
+async function getBlob(key) {
+    const db = await openDb();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const st = tx.objectStore(STORE_NAME);
+        const r = st.get(key);
+        r.onsuccess = () => resolve(r.result || null);
+        r.onerror = () => reject(r.error);
+    });
+}
+
+async function putBlob(key, blob) {
+    const db = await openDb();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const st = tx.objectStore(STORE_NAME);
+        const r = st.put(blob, key);
+        r.onsuccess = () => resolve(true);
+        r.onerror = () => reject(r.error);
+    });
+}
+
+// keep objectURL cache to avoid recreating blobs every time
+const objectUrlCache = new Map();
+function createObjectURLForKey(key, blob) {
+    if (objectUrlCache.has(key)) return objectUrlCache.get(key);
+    const url = URL.createObjectURL(blob);
+    objectUrlCache.set(key, url);
+    return url;
+}
+
+async function getCachedUrl(key, fallbackUrl) {
+    try {
+        const blob = await getBlob(key);
+        if (blob) return createObjectURLForKey(key, blob);
+    } catch (e) {
+        console.warn('IDB get failed', key, e);
+    }
+    return fallbackUrl;
+}
+
+// Fetch and cache resource if missing
+async function fetchAndCache(key, url) {
+    try {
+        const existing = await getBlob(key);
+        if (existing) return true;
+    } catch (e) {
+        // continue to fetch
+    }
+    try {
+        const resp = await fetch(url, { mode: 'no-cors' });
+        if (!resp || !resp.ok) {
+            // some servers may not allow CORS; try without checking ok by reading blob
+            const b = await resp.blob();
+            await putBlob(key, b);
+            return true;
+        }
+        const blob = await resp.blob();
+        await putBlob(key, blob);
+        return true;
+    } catch (err) {
+        console.warn('fetch/cache failed', url, err);
+        return false;
+    }
+}
+
+// Cache all songs and covers in background (non-blocking)
+function cacheAllResources() {
+    // run after a small delay so UI can render
+    setTimeout(() => {
+        // cache songs
+        songs.forEach((s) => fetchAndCache(s.src, s.src));
+        // cache covers
+        cover.forEach((c) => fetchAndCache(c, c));
+    }, 1000);
+}
+
+// Register Service Worker for offline app shell + media caching
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('ServiceWorker registered:', reg.scope))
+            .catch(err => console.warn('ServiceWorker registration failed:', err));
+    });
+}
+
+
 
 let index = 0;
 let audio = document.getElementById("audio");
@@ -54,25 +162,48 @@ if (audio) {
 
 // Load first song (only if songs available)
 if (songs.length > 0) {
-    loadSong(index);
+    // initial load (do not autoplay)
+    loadSong(index).catch((e) => console.warn('initial load failed', e));
+    // start background caching of resources
+    if ('indexedDB' in window) cacheAllResources();
 } else {
-    // If there are no songs, disable controls or show a message (keeps existing code intact)
     console.warn("No songs found in playlist.");
 }
 
-function loadSong(i) {
-    audio.src = songs[i].src;
-    songTitle.innerText = songs[i].title;
-    // set cover image (use modulo in case there are fewer covers than songs)
-    if (img && cover.length > 0) {
-        const c = cover[i % cover.length];
-        img.style.backgroundImage = `url('${c}')`;
+// loadSong now uses cached resources when available
+async function loadSong(i) {
+    if (!audio) return;
+    const song = songs[i];
+    if (!song) return;
+    songTitle && (songTitle.innerText = song.title);
+
+    // try to use cached blob url for audio
+    try {
+        const audioUrl = await getCachedUrl(song.src, song.src);
+        // assign src only when resolved
+        audio.src = audioUrl;
+    } catch (e) {
+        audio.src = song.src;
     }
 
-    audio.addEventListener("loadedmetadata", () => {
+    // set cover image (use cached URL when available)
+    if (img && cover.length > 0) {
+        const cpath = cover[i % cover.length];
+        try {
+            const coverUrl = await getCachedUrl(cpath, cpath);
+            img.style.backgroundImage = `url('${coverUrl}')`;
+        } catch (e) {
+            img.style.backgroundImage = `url('${cpath}')`;
+        }
+    }
+
+    // ensure seekBar max will be updated when metadata loads
+    const onMeta = () => {
         seekBar.max = audio.duration;
         updateTime();
-    });
+        audio.removeEventListener('loadedmetadata', onMeta);
+    };
+    audio.addEventListener('loadedmetadata', onMeta);
 }
 
 function playPause() {
@@ -90,16 +221,18 @@ function playPause() {
     }
 }
 
-function nextSong() {
+async function nextSong() {
+    if (songs.length === 0) return;
     index = (index + 1) % songs.length;
-    loadSong(index);
-    audio.play();
+    await loadSong(index);
+    try { await audio.play(); } catch (e) {}
 }
 
-function prevSong() {
+async function prevSong() {
+    if (songs.length === 0) return;
     index = (index - 1 + songs.length) % songs.length;
-    loadSong(index);
-    audio.play();
+    await loadSong(index);
+    try { await audio.play(); } catch (e) {}
 }
 
 seekBar.addEventListener("input", () => {
@@ -172,10 +305,10 @@ songs.forEach((song, i) => {
     item.appendChild(thumb);
     item.appendChild(title);
 
-    item.onclick = () => {
+    item.onclick = async () => {
         index = i;
-        loadSong(index);
-        audio.play();
+        await loadSong(index);
+        try { await audio.play(); } catch (e) {}
     };
 
     playlist.appendChild(item);

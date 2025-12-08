@@ -83,17 +83,6 @@ body{
   text-align: left;
 }
 
-/* per-item play/pause icon */
-#playlist .playlist-icon{
-  font-size: 14px;
-  color: #FFC94F;
-  opacity: 0.95;
-}
-
-#playlist .playlist-item.playing{
-  background: rgba(255,201,79,0.08);
-}
-
 /* hide vertical scrollbar in playlist dropdown while keeping scrolling functional */
 #playlist.playlist-dropdown{
   -ms-overflow-style: none; /* IE and Edge */
